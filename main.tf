@@ -81,3 +81,5 @@ resource "azurerm_virtual_network" "vnet" {
 
   tags = local.tags
 }
+
+##
