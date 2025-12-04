@@ -28,6 +28,33 @@ resource "azurerm_resource_group" "rg" {
 }
 
 // -----------------------------------------------------------------------------
+// Virtual Network
+// -----------------------------------------------------------------------------
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet-${var.class_name}-${var.student_name}-${var.environment}"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  tags = local.tags
+}
+
+// -----------------------------------------------------------------------------
+// Subnet (with service endpoints for Storage + SQL)
+// -----------------------------------------------------------------------------
+resource "azurerm_subnet" "subnet" {
+  name                 = "subnet-${var.class_name}-${var.student_name}-${var.environment}"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+
+  service_endpoints = [
+    "Microsoft.Storage",
+    "Microsoft.Sql"
+  ]
+}
+
+// -----------------------------------------------------------------------------
 // Storage Account
 // -----------------------------------------------------------------------------
 resource "azurerm_storage_account" "storage" {
@@ -61,25 +88,11 @@ resource "azurerm_mssql_server" "sql_server" {
 // Azure SQL Database (MSSQL)
 // -----------------------------------------------------------------------------
 resource "azurerm_mssql_database" "sql_db" {
-  name = "sqldb-${var.class_name}-${var.student_name}-${var.environment}"
-
-  # Correct way for MSSQL databases
+  name      = "sqldb-${var.class_name}-${var.student_name}-${var.environment}"
   server_id = azurerm_mssql_server.sql_server.id
 
   sku_name    = "S0"
   max_size_gb = 10
-
-  tags = local.tags
-}
-
-// -----------------------------------------------------------------------------
-// Virtual Network
-// -----------------------------------------------------------------------------
-resource "azurerm_virtual_network" "vnet" {
-  name                = "vnet-${var.class_name}-${var.student_name}-${var.environment}"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
 
   tags = local.tags
 }
