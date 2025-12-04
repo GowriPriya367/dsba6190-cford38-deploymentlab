@@ -58,7 +58,8 @@ resource "azurerm_subnet" "subnet" {
 // Storage Account
 // -----------------------------------------------------------------------------
 resource "azurerm_storage_account" "storage" {
-  name                     = "sto${var.class_name}${var.student_name}${var.environment}"
+  // must be globally unique, all lowercase, <= 24 chars
+  name                     = "sto${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -71,7 +72,7 @@ resource "azurerm_storage_account" "storage" {
 // Azure SQL Server (MSSQL)
 // -----------------------------------------------------------------------------
 resource "azurerm_mssql_server" "sql_server" {
-  name                = "sqlsrv-${var.class_name}-${var.student_name}-${var.environment}"
+  name                = "sqlsrv-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   version             = "12.0"
@@ -88,7 +89,7 @@ resource "azurerm_mssql_server" "sql_server" {
 // Azure SQL Database (MSSQL)
 // -----------------------------------------------------------------------------
 resource "azurerm_mssql_database" "sql_db" {
-  name      = "sqldb-${var.class_name}-${var.student_name}-${var.environment}"
+  name      = "sqldb-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
   server_id = azurerm_mssql_server.sql_server.id
 
   sku_name    = "S0"
