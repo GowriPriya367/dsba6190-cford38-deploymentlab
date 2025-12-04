@@ -8,7 +8,6 @@ variable "tag_instructor" {
   default = "cford38"
 }
 
-
 variable "tag_semester" {
   type    = string
   default = "fall2024"
@@ -25,7 +24,6 @@ variable "location" {
   }
 }
 
-
 // Azure-Specific App Variables
 
 variable "environment" {
@@ -37,11 +35,25 @@ variable "environment" {
 variable "student_name" {
   description = "Application Name"
   type        = string
-  default     = "cford38"
+  default     = "gowri"
 }
 
 variable "class_name" {
   description = "Application Name"
   type        = string
   default     = "dsba6190"
+}
+
+# 🔹 ADD THESE:
+variable "sql_admin_username" {
+  description = "Administrator username for the Azure SQL Server"
+  type        = string
+  default     = "sqladminuser"
+}
+
+variable "sql_admin_password" {
+  description = "Administrator password for the Azure SQL Server"
+  type        = string
+  sensitive   = true
+  default     = "SomeP@ssword1234!" # change if your instructor wants something else
 }
